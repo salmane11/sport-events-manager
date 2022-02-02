@@ -28,6 +28,7 @@ public class SportEventsMangerApplication {
 			System.out.println("press d to delete a team");
 			System.out.println("press e to visualize the events coming");
 			System.out.println("press f to delete an event ");
+			System.out.println("press g to visualize teams details");
 			System.out.println("press q to exit the sport events manager\n");
 			enteredValue=keyb.next().charAt(0);
 			
@@ -65,7 +66,7 @@ public class SportEventsMangerApplication {
 					
 					System.out.println("please enter players number");
 					int n=keyb.nextInt();
-					for(int i=0;i<n;i++) {
+					for(int i=1;i<=n;i++) {
 						System.out.println("please enter the player "+i+" name");
 						String playerName=scanner.nextLine();
 						System.out.println("please enter the player "+i+" position");
@@ -91,7 +92,8 @@ public class SportEventsMangerApplication {
 							for(Team team : teams ) {
 								if(team.getTeamName().equals(teName)) {
 									event.addTeam(team);
-									result.append("team added successfully"+team.getTeamName());
+									team.addEvent(event.getEventId());
+									result.append("team added successfully :"+team.getTeamName());
 									break;
 								}
 							}
@@ -108,31 +110,39 @@ public class SportEventsMangerApplication {
 				case 'd':
 					System.out.println("enter the team's name");
 					String teamsName = scanner.nextLine();
-					
+					StringBuilder response=new StringBuilder("");
 					for(Team team:teams) {
 						if(team.getTeamName().equals(teamsName)) {
 							teams.remove(team);
-							System.out.println("the team selected was removed successfully");
+							response.append("the team selected was removed successfully");
+							for(Event event :events) {
+								event.getEventTeams().remove(team);
+							}
+							break;
 						}
 					}
-					System.out.println("the team entered does not exist");
+					if(response.length()<5) {
+						response.append("the team entered does not exist");
+					}
+					System.out.println(response.toString());
 					break;
 					
 				case 'e':
 					if(events.isEmpty()) {
 						System.out.println("no events are coming ");
 					}else {
-						System.out.println("the events comming are ");
+						System.out.println("/nthe events comming are ");
 						for(int i=0; i<events.size();i++) {
 							System.out.println("event "+(i+1));
 							System.out.println(events.get(i).getEventName()+"  "+events.get(i).getEventDate());
-							if(events.get(i).eventTeams!=null) {
+							if(events.get(i).eventTeams.size()!=0) {
 								System.out.println("teams participating: ");
 								for(Team team:events.get(i).eventTeams) {
-									System.out.print("team "+i+"  :"+team.getTeamName());
+									System.out.print("team "+(i+1)+"  :"+team.getTeamName()+"  ");
 								}
+							}else {
+								System.out.println("no teams yet");
 							}
-							System.out.println("no teams yet");
 						}
 					}
 					break;
@@ -140,15 +150,43 @@ public class SportEventsMangerApplication {
 				case 'f':
 					System.out.println("to delete an event please enter his name");
 					String enteredName=scanner.nextLine();
+					StringBuilder feedback=new StringBuilder("");
 					for(Event event:events) {
 						if(event.getEventName().equals(enteredName)) {
+							for(Team team : event.getEventTeams()) {
+								team.deleteEvent(event.getEventId());
+							}
 							events.remove(event);
-							System.out.println("the event chosen was removed successfully");
+							feedback.append("the event chosen was removed successfully");
 							break;
 						}
 					}
+					if(feedback.length()<5) {
+						feedback.append("the event name does not exist");
+					}
+					System.out.println(feedback.toString());
 					break;
 					
+				case 'g':
+					System.out.println("please enter the team you want to discover");
+					StringBuilder details=new StringBuilder("");
+					String teamLogo=scanner.nextLine();
+					for(Team team :teams ) {
+						if(team.getTeamName().equals(teamLogo)) {
+							details.append("name : "+team.getTeamName());
+							details.append("/n_"+team.showTeamPlayers());
+							for(Long eventIdentifier : team.teamEvents) {
+								for(Event event :events) {
+									if(event.getEventId()==eventIdentifier) {
+										details.append("/nevent Name : " +event.eventName+" -- event date : "+event.eventDate+" , ");
+										break;
+									}
+								}
+							}
+						}
+					}
+					System.out.println(details.toString());
+					break;
 				case 'q':
 					System.out.println("goodbuye");
 					break;

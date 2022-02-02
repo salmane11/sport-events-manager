@@ -86,7 +86,7 @@ public class Team {
 	public String showTeamPlayers() {
 		StringBuilder players=new StringBuilder("[ ");
 		for(Player player : teamPlayers) {
-			players.append(player.playerId+"--"+player.playerName+" ,");
+			players.append("id : "+player.playerId+" -- name : "+player.playerName+" -- position : "+player.playerPosition+" -- age : "+player.playerAge+" , ");
 		}
 		players.append(" ].");
 		return players.toString();

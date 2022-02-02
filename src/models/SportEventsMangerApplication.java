@@ -131,7 +131,7 @@ public class SportEventsMangerApplication {
 					if(events.isEmpty()) {
 						System.out.println("no events are coming ");
 					}else {
-						System.out.println("/nthe events comming are ");
+						System.out.println("\nthe events comming are ");
 						for(int i=0; i<events.size();i++) {
 							System.out.println("event "+(i+1));
 							System.out.println(events.get(i).getEventName()+"  "+events.get(i).getEventDate());
@@ -174,11 +174,11 @@ public class SportEventsMangerApplication {
 					for(Team team :teams ) {
 						if(team.getTeamName().equals(teamLogo)) {
 							details.append("name : "+team.getTeamName());
-							details.append("/n_"+team.showTeamPlayers());
+							details.append("\n_"+team.showTeamPlayers());
 							for(Long eventIdentifier : team.teamEvents) {
 								for(Event event :events) {
 									if(event.getEventId()==eventIdentifier) {
-										details.append("/nevent Name : " +event.eventName+" -- event date : "+event.eventDate+" , ");
+										details.append("\nevent Name : " +event.eventName+" -- event date : "+event.eventDate+" , ");
 										break;
 									}
 								}

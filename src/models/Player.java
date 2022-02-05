@@ -7,6 +7,11 @@ public class Player {
 	long teamId;
 	String playerPosition;
 	
+	
+	
+	public Player() {
+	}
+
 	public Player(long playerId, String playerName, int playerAge, long teamId, String playerPosition) {
 		super();
 		this.playerId = playerId;

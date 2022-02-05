@@ -1,26 +1,35 @@
 package models;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import dao.DAOEvent;
+import dao.DAOPlayer;
+import dao.DAOTeam;
+
 public class SportEventsMangerApplication {
 
-	public static void main(String[]args) {
-		long eventId=0;
-		long teamId=1;
-		long playerId=1;
-		List<Event> events=new ArrayList<Event>();
-		List<Team> teams=new ArrayList<Team>();
-		List<Player> players=new ArrayList<Player>();
+	public static void main(String[]args) throws Exception {
+		
+		DAOPlayer daoPlayer=new DAOPlayer();
+		DAOTeam daoTeam=new DAOTeam();
+		DAOEvent daoEvent=new DAOEvent();
+		List<Event> events=daoEvent.getEvents();
+		List<Team> teams=daoTeam.getTeams();
+		List<Player> players=daoPlayer.getPlayers();
+		long eventId=events.size()+1;
+		long teamId=teams.size()+1;
+		long playerId=players.size()+1;
 		
 		
 		Scanner keyb=new Scanner(System.in);
 		Scanner scanner=new Scanner(System.in);
 		char enteredValue='a';
 		while (enteredValue!='q') {
-			System.out.println("\nSport Events Manager App");
+			System.out.println("\n\nSport Events Manager App");
 			System.out.println("feel free to ask what you want");
 			System.out.println("press a to create a new event");
 			System.out.println("press b to create a team");
@@ -45,13 +54,14 @@ public class SportEventsMangerApplication {
 					myEvent.setEventId(myEventId);
 					System.out.println(myEventId);
 					
-					LocalDateTime eventDate=LocalDateTime.now();
+					LocalDate eventDate=LocalDate.now();
 					myEvent.setEventDate(eventDate);
 					System.out.println(eventDate);					
 					
 					System.out.println("\n\nyour event was successfully created");
 					System.out.println("to add a team press a");
 					events.add(myEvent);
+					daoEvent.createEvent(myEvent);
 					break;
 								
 				case 'b':
@@ -74,9 +84,11 @@ public class SportEventsMangerApplication {
 						System.out.println("please enter the player "+i+" age");
 						int playerAge=keyb.nextInt();
 						Player myPlayer=new Player(playerId++,playerName,playerAge,teamId-1,playerPosition);
+						daoPlayer.createPlayer(myPlayer);
 						players.add(myPlayer);
 						myTeam.addPlayer(myPlayer);
 					}
+					daoTeam.createTeam(myTeam);
 					teams.add(myTeam);
 					System.out.println("your team was created successfully;");
 					break;
@@ -91,6 +103,7 @@ public class SportEventsMangerApplication {
 						if(event.getEventName().equals(evName)) {
 							for(Team team : teams ) {
 								if(team.getTeamName().equals(teName)) {
+									daoEvent.addTeam(team, event.getEventId());
 									event.addTeam(team);
 									team.addEvent(event.getEventId());
 									result.append("team added successfully :"+team.getTeamName());
@@ -113,6 +126,7 @@ public class SportEventsMangerApplication {
 					StringBuilder response=new StringBuilder("");
 					for(Team team:teams) {
 						if(team.getTeamName().equals(teamsName)) {
+							daoTeam.deleteTeam(team);
 							teams.remove(team);
 							response.append("the team selected was removed successfully");
 							for(Event event :events) {
@@ -133,12 +147,12 @@ public class SportEventsMangerApplication {
 					}else {
 						System.out.println("\nthe events comming are ");
 						for(int i=0; i<events.size();i++) {
-							System.out.println("event "+(i+1));
+							System.out.println("\nevent "+(i+1));
 							System.out.println(events.get(i).getEventName()+"  "+events.get(i).getEventDate());
 							if(events.get(i).eventTeams.size()!=0) {
 								System.out.println("teams participating: ");
 								for(Team team:events.get(i).eventTeams) {
-									System.out.print("team "+(i+1)+"  :"+team.getTeamName()+"  ");
+									System.out.println("team  :"+team.getTeamName()+"  ");
 								}
 							}else {
 								System.out.println("no teams yet");
@@ -156,6 +170,7 @@ public class SportEventsMangerApplication {
 							for(Team team : event.getEventTeams()) {
 								team.deleteEvent(event.getEventId());
 							}
+							daoEvent.deleteEvent(event);
 							events.remove(event);
 							feedback.append("the event chosen was removed successfully");
 							break;

@@ -11,7 +11,6 @@ public class Team {
 	
 	
 	public Team() {
-		System.out.println("a team was created");
 		teamPlayers=new ArrayList<Player>();
 		teamEvents=new ArrayList<Long>();
 	}
@@ -107,7 +106,6 @@ public class Team {
 			teamEvents.remove(id);
 			return id;
 		}else {
-			System.out.println("the event does not exist");
 			return -1;
 		}
 	}

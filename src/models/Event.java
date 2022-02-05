@@ -1,6 +1,7 @@
 package models;
 
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,18 +9,17 @@ import java.util.List;
 public class Event {
 	long eventId;
 	String eventName;
-	LocalDateTime eventDate;
+	LocalDate eventDate;
 	List<Team>eventTeams;
 	
 	
 	
 	public Event() {
-		System.out.println("your event was created");
 		eventTeams=new ArrayList<Team>();
 	}
 
 
-	public Event(long eventId, String eventName, LocalDateTime eventDate, List<Team> eventTeams) {
+	public Event(long eventId, String eventName, LocalDate eventDate, List<Team> eventTeams) {
 		super();
 		this.eventId = eventId;
 		this.eventName = eventName;
@@ -41,10 +41,10 @@ public class Event {
 		this.eventName = eventName;
 	}
 	
-	public LocalDateTime getEventDate() {
+	public LocalDate getEventDate() {
 		return eventDate;
 	}
-	public void setEventDate(LocalDateTime eventDate) {
+	public void setEventDate(LocalDate eventDate) {
 		this.eventDate = eventDate;
 	}
 
@@ -58,7 +58,8 @@ public class Event {
 	
 	
 	public void addTeam(Team team) {
-		if(eventTeams.size()<2) {
+		
+		if(!eventTeams.contains(team) && eventTeams.size()<2) {
 			eventTeams.add(team);
 		}else {
 			System.out.println("the event teams are already set. you can replace a team by another one");
